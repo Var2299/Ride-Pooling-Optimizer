@@ -57,7 +57,7 @@ curl -X POST http://localhost:3001/match \
     "mode": "mcmf"
   }'
 
----
+```
 
 Expected Sample Response
 ```bash
@@ -72,7 +72,7 @@ Expected Sample Response
   "processingTimeMs": 18
 }
 
----
+```
 
 ## 💡Quick Demo Script
 Start Services: Run npm run dev.
