@@ -28,7 +28,7 @@ function App() {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:3001/match', {
+      const response = await fetch('https://ride-pooling-optimizer.vercel.app/match', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
