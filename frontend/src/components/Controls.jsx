@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import PRESET_SCENARIOS from './PresetsScenarios';
 const Controls = ({ onMatch, loading, sampleData }) => {
   const [driversJson, setDriversJson] = useState(JSON.stringify(sampleData.drivers, null, 2));
   const [requestsJson, setRequestsJson] = useState(JSON.stringify(sampleData.requests, null, 2));
@@ -30,51 +30,16 @@ const Controls = ({ onMatch, loading, sampleData }) => {
       setJsonError(error.message);
     }
   };
+  
 
-  const generateRandomScenario = () => {
-    const cities = [
-      { name: 'Delhi', lat: 28.7, lng: 77.1 },
-      { name: 'Mumbai', lat: 19.0, lng: 72.8 },
-      { name: 'Bangalore', lat: 12.9, lng: 77.6 },
-    ];
-    
-    const city = cities[Math.floor(Math.random() * cities.length)];
-    const drivers = [];
-    const requests = [];
-    
-    // Generate 3-5 random drivers
-    const numDrivers = 3 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < numDrivers; i++) {
-      drivers.push({
-        id: `d${i + 1}`,
-        lat: city.lat + (Math.random() - 0.5) * 0.1,
-        lng: city.lng + (Math.random() - 0.5) * 0.1,
-        etaMin: Math.floor(Math.random() * 10) + 2,
-        capacity: Math.floor(Math.random() * 3) + 1
-      });
-    }
-    
-    // Generate 4-8 random requests
-    const numRequests = 4 + Math.floor(Math.random() * 5);
-    for (let i = 0; i < numRequests; i++) {
-      const srcLat = city.lat + (Math.random() - 0.5) * 0.15;
-      const srcLng = city.lng + (Math.random() - 0.5) * 0.15;
-      requests.push({
-        id: `r${i + 1}`,
-        src: { lat: srcLat, lng: srcLng },
-        dst: { 
-          lat: srcLat + (Math.random() - 0.5) * 0.1,
-          lng: srcLng + (Math.random() - 0.5) * 0.1
-        },
-        earliest: Math.floor(Math.random() * 10),
-        latest: 30 + Math.floor(Math.random() * 30)
-      });
-    }
-    
-    setDriversJson(JSON.stringify(drivers, null, 2));
-    setRequestsJson(JSON.stringify(requests, null, 2));
-    setJsonError(null);
-  };
+  const loadPresetScenario = (key) => {
+  const scenario = PRESET_SCENARIOS[key];
+  if (!scenario) return;
+
+  setDriversJson(JSON.stringify(scenario.drivers, null, 2));
+  setRequestsJson(JSON.stringify(scenario.requests, null, 2));
+  setJsonError(null);
+};
 
   return (
     <div className="card">
@@ -172,20 +137,19 @@ const Controls = ({ onMatch, loading, sampleData }) => {
             )}
           </button>
           
-          <button
-            type="button"
-            onClick={generateRandomScenario}
-            className="btn btn-secondary w-full"
-            disabled={loading}
-          >
-            <span className="flex items-center justify-center">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Generate Random Scenario
-            </span>
-          </button>
+          <select
+  onChange={(e) => loadPresetScenario(e.target.value)}
+  className="px-4 py-2 rounded-xl border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 hover:border-indigo-400 transition-all duration-200"
+>
+  <option value="">-- Select Scenario --</option>
+  {Object.keys(PRESET_SCENARIOS).map((key) => (
+    <option key={key} value={key}>
+      {key}
+    </option>
+  ))}
+</select>
+
+
         </div>
       </form>
     </div>
